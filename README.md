@@ -19,14 +19,15 @@ Usage
 
 At this point you have a CSV file with user_id, project_id, weight preferences to do some ML on.
 
-For the example here, I used Mahout's ALS implementation on Hadoop. This works on Cloudera's CDH5 out of the box:
+For the example here, I used Mahout's Hadoop recommender implementation. This works on Cloudera's CDH5 out of the box:
 
 - Create a new directory structure on Hadoop: `hadoop fs -mkdir /github; hadoop fs -mkdir /github/csv`
 - Upload the CSV file: `hadoop fs -put recommendations.csv /github/csv`
-- Run the first phase: `mahout parallelALS --input /github/csv --output /github/als --lambda 0.1 --implicitFeedback true --alpha 0.8 --numFeatures 10 --numIterations 15`
-- Run the second phase:
+- Run the first phase: `mahout recommenditembased --input /github/csv --output /github/recommend --minPrefsPerUser 1 --maxPrefsPerUser 100 -s SIMILARITY_PEARSON_CORRELATION --maxSimilarItemsPerItem 10000 --maxPrefsPerUserInItemSimilarity 10000 --maxPrefsPerUser 10000`
 - Pull the results directory down: `hadoop fs -get /github/recommend`
 - Run `backend/parse_recommendation.py` to produce a CSV from the weird format Mahout produces
+
+Right now the Mahout recommender will give fewer than 10 items per user if they haven't committed enough. There's also an experimental Spark recommender using ALS, which is slower but should give some recommendations for everyone. It's a Scala project in GitHubRecommender.
 
 If you didn't use Mahout, you're on your own for getting a CSV of user, repo, weight recommendations.
 
