@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>GitHub Recommender</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="stylesheet.css" rel="stylesheet" />
+        <link href="octicons.css" rel="stylesheet" />
+        <link href="github_colors.css" rel="stylesheet" />
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js'></script>
+        <script id='user-template' type="text/x-handlebars-template">
+            <div class='center-hero'>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <h2>{{username}}</h2>
+                </div>
+            </div>  
+            <div class='row'>
+                <div class='col-md-12'>
+                    <p>Based on your GitHub activity, we think you should check out</p>
+                </div>
+            </div>
+            </div> 
+            <div id='projects'>
+                
+            </div>
+        </script>
+        <script id='project-template' type="text/x-handlebars-template">
+            <div class='col-md-4'>
+               <div class='panel panel-default'>
+                   <h3 class='panel-title project-{{language}}'>
+                       <a href='{{url}}'>{{name}}</a>
+                   </h3>
+                   <div class='infobar'>
+                       <span class='info' title='{{forks}} forks'><span class='octicon octicon-git-branch tiny' /></span>{{forks}}</span>
+                       <span class='info' title='{{issues}} issues'><span class='octicon octicon-issue-opened tiny'></span>{{issues}}</span>
+                       <span class='info' title='{{watchers}} watchers'><span class='octicon octicon-eye  tiny'></span>{{watchers}}</span>
+                       <div class='clear'></div>
+                   </div>
+                   <p class="project-desc">{{description}}</p>
+                   <div class='panel-footer'><img class='tiny' src='{{owner_avatar}}'/>
+                       <a href='{{owner_url}}'>{{owner}}</a>
+                   </div>
+               </div> 
+            </div> 
+        </script>
+        <script>
+        var opts = {
+           lines: 13, // The number of lines to draw
+           length: 20, // The length of each line
+           width: 10, // The line thickness
+           radius: 30, // The radius of the inner circle
+           corners: 1, // Corner roundness (0..1)
+           rotate: 0, // The rotation offset
+           direction: 1, // 1: clockwise, -1: counterclockwise
+           color: '#000', // #rgb or #rrggbb or array of colors
+           speed: 1, // Rounds per second
+           trail: 60, // Afterglow percentage
+           shadow: false, // Whether to render a shadow
+           hwaccel: false, // Whether to use hardware acceleration
+           className: 'spinner', // The CSS class to assign to the spinner
+           zIndex: 2e9, // The z-index (defaults to 2000000000)
+           top: '300px', // Top position relative to parent
+           left: '50%' // Left position relative to parent
+       };        
+            function produceTiles(projects){
+                var template = Handlebars.compile($('#project-template').html())
+                for (var i=0; i<3; i++){
+                    var row = document.createElement('div');
+                    row.class='row';
+                    for (var j=0; j<3; j++){
+                        if (typeof projects[i*3+j] != 'undefined'){
+                            projects[i*3+j].language = projects[i*3+j].language.replace(/\+/g,'plus').replace(/#/g,'sharp').replace(' ','');
+                            var cell = template(projects[i*3+j]);
+                            row.innerHTML+=cell;
+                        }
+                    }
+                    $('#projects').append(row);
+                }
+            };
+            function loadResults(user) {
+                var container = document.getElementById('container');
+                var template = Handlebars.compile($('#user-template').html()); 
+                container.innerHTML=template({'username':user});
+                var spin = new Spinner(opts).spin(document.getElementById('projects')); 
+                $.getJSON('http://54.84.80.229:8080/recommend?user='+user, function(data){spin.stop(); produceTiles(data);});
+            }
+            function formSubmit(){
+                var user = document.getElementById('username').value;
+                window.location.href = window.location.href+'#'+user;
+                loadResults(user);
+                return false; 
+            }
+            window.onload = function(){
+                if (location.hash != ''){
+                    loadResults(location.hash.slice(1));
+                }
+            }
+        </script> 
+    </head>
+    <body>
+        <div class='container' id='container'>
+           <div class='row center-hero top-margin'>
+               <h2>GitHub Recommender</h2>
+               <div class='dark-box'>
+                   <p>Enter your GitHub username to see your recommendations
+                   <form class='form-inline' onsubmit='formSubmit(); return false;'>
+                       <input id='username' class='form-control'/>
+                       <button class='btn btn-primary' type='submit'>Recommend</button>
+                   </form> 
+               </div>
+           </div>
+        </div>
+    </body>
+</html>

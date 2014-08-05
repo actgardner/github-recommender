@@ -1,0 +1,72 @@
+.panel-title {
+    padding: 8px 10px;
+    border-radius: 3px 3px 0px 0px;
+    background-color: #EEE;
+    border-bottom: 5px solid gray;
+    font-weight: bold;
+}
+
+.panel-footer {
+    border-top: 1px solid #CCC;
+    border-radius: 0px 0px 5px 5px;
+    padding: 5px 5px;
+    font-size: 10pt;  
+    font-weight: bold
+}
+
+#projects {
+    margin-top: 20px;
+}
+
+.project-desc {
+    font-size: 10pt;
+    padding: 5px 10px;
+    text-align: justify;
+    height: 100px;
+    overflow: hidden;
+}
+
+.center-hero {
+    text-align: center;
+    padding: 40px;
+}
+
+.top-margin {
+    margin-top: 100px;
+}
+
+.dark-box {
+    background-color: #EEE;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.info {
+    float: left;
+    min-width:78px;
+}
+
+.infobar {
+   border-bottom: 1px solid #CCC;
+   padding: 5px 5px 3px 9px;
+   font-size: 10pt;
+}
+
+.tiny {
+    width: 16px;
+    height: 16px;
+    margin: 0px 5px;
+}
+
+.clear {
+    clear: both;
+}
+
+.float {
+    float: left;
+    padding: 5px 10px;
+}
+
+span.username {
+    font-size: 10pt;
+}
