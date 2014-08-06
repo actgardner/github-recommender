@@ -19,4 +19,4 @@ for l in xrange(1,20):
     c.execute(sql)
 db.commit()
 
-c.execute('INSERT INTO commit_prefs SELECT author_id, parent_id, COUNT(*) FROM commits c JOIN fork_source f ON (c.project_id = f.project_id);')
+c.execute('INSERT INTO commit_prefs SELECT author_id, parent_id, COUNT(*) FROM commits c JOIN fork_source f ON (c.project_id = f.project_id) GROUP BY author_id, parent_id;')
