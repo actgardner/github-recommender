@@ -12,7 +12,6 @@ with open('recommendations.csv', 'w') as output:
                 lines +=1
                 (k,v) = line.split('\t')
                 v = v.replace("[","").replace("]","")
-                print k
                 for r in v.split(","):
                     (p,s) = r.split(':')
                     output.write('{0},{1},{2}\n'.format(k,p, s))

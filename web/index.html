@@ -9,6 +9,18 @@
         <script src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js'></script>
         <script src='https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.min.js'></script>
         <script src='https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js'></script>
+        <script id='landing-template' type="text/x-handlebars-template">
+           <div class='row center-hero top-margin'>
+               <h2>GitHub Recommender</h2>
+               <div class='dark-box'>
+                   <p>Enter your GitHub username to see your recommendations
+                   <form class='form-inline' onsubmit='formSubmit(); return false;'>
+                       <input id='username' class='form-control'/>
+                       <button class='btn btn-primary' type='submit'>Recommend</button>
+                   </form> 
+               </div>
+           </div>
+        </script>
         <script id='user-template' type="text/x-handlebars-template">
             <div class='center-hero'>
             <div class='row'>
@@ -18,7 +30,7 @@
             </div>  
             <div class='row'>
                 <div class='col-md-12'>
-                    <p>Based on your GitHub activity, we think you should check out</p>
+                    <p id="feedback-text">Based on your GitHub activity, we think you should check out</p>
                 </div>
             </div>
             </div> 
@@ -78,6 +90,9 @@
                     }
                     $('#projects').append(row);
                 }
+                if (projects.length < 1){
+                    $('#feedback-text').text("Sorry, we've got nothing. Maybe you don't have enough public commits?");
+                }
             };
             function loadResults(user) {
                 var container = document.getElementById('container');
@@ -88,29 +103,33 @@
             }
             function formSubmit(){
                 var user = document.getElementById('username').value;
-                window.location.href = window.location.href+'#'+user;
-                loadResults(user);
+                location.hash = user;
                 return false; 
+            }
+            function loadLanding(){
+                var container = document.getElementById('container');
+                var template = Handlebars.compile($('#landing-template').html());
+                container.innerHTML=template()
             }
             window.onload = function(){
                 if (location.hash != ''){
                     loadResults(location.hash.slice(1));
+                } else {
+                    loadLanding();
+                }
+            }
+            window.onhashchange = function(){
+                if (location.hash != ''){
+                    loadResults(location.hash.slice(1));
+                } else {
+                    loadLanding();
                 }
             }
         </script> 
     </head>
     <body>
         <div class='container' id='container'>
-           <div class='row center-hero top-margin'>
-               <h2>GitHub Recommender</h2>
-               <div class='dark-box'>
-                   <p>Enter your GitHub username to see your recommendations
-                   <form class='form-inline' onsubmit='formSubmit(); return false;'>
-                       <input id='username' class='form-control'/>
-                       <button class='btn btn-primary' type='submit'>Recommend</button>
-                   </form> 
-               </div>
-           </div>
+           
         </div>
     </body>
 </html>
