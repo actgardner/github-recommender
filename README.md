@@ -7,11 +7,6 @@ The current collaborative filtering approach uses binary preferences for user,re
 
 Another possibility is to use ALS to factor the matrix, and generate the predicted user-item scores at query time. 
 
-Example
-----
-
-Visit http://recommend.batsignal.io to try it out! You need to have lots of public commits for it to come up with recommendations.
-
 Usage
 ----
 
